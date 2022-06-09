@@ -6,12 +6,12 @@ const Algorithm = {
   QUICK_SORT: 4,
   COUNTING_SORT: 5,
   HEAP_SORT: 6,
+  BITONIC_SORT: 7,
 };
 
 class Sorter {
   constructor(num) {
     this._num = num;
-
     this.setAlgorithm();
   }
 
@@ -45,6 +45,10 @@ class Sorter {
         this.sort = this._heapSort.bind(this);
         break;
 
+      case Algorithm.BITONIC_SORT:
+        this.sort = this._bitonicSort.bind(this);
+        break;
+
       default:
         this.sort = this._bubbleSort.bind(this);
         break;
@@ -52,7 +56,7 @@ class Sorter {
   }
 
   generateSequence() {
-    this._sequence = Array(this._num)
+    this._to_order = Array(this._num)
       .fill()
       .map((_, i) => ({ val: i, order: Math.random() }))
       .sort((a, b) => a.order - b.order)
@@ -66,6 +70,7 @@ class Sorter {
   }
 
   _bubbleSort() {
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
 
     let swapped = true;
@@ -84,6 +89,7 @@ class Sorter {
   }
 
   _insertionSort() {
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
 
     for (let i = 1; i < this._num; i++) {
@@ -98,6 +104,7 @@ class Sorter {
   }
 
   _selectionSort() {
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
 
     for (let i = 0; i < this._num - 1; i++) {
@@ -150,6 +157,7 @@ class Sorter {
       }
     };
 
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
     merge_sort(this._sequence, 0, this._num - 1);
   }
@@ -188,11 +196,13 @@ class Sorter {
       }
     };
 
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
     quick_sort(this._sequence, 0, this._num - 1);
   }
 
   _countingSort() {
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
 
     const max = Math.max(...this._sequence);
@@ -250,8 +260,31 @@ class Sorter {
       }
     };
 
+    this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
     heap_sort(this._sequence, this._num);
+  }
+
+  _bitonicSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    for (let k = 2; k <= this._num; k *= 2) {
+      for (let j = Math.floor(k / 2); j > 0; j = Math.floor(j / 2)) {
+        for (let i = 0; i < this._num; i++) {
+          const l = i ^ j;
+          if (l > i) {
+            if (
+              ((i & k) == 0 && this._sequence[i] > this._sequence[l]) ||
+              ((i & k) != 0 && this._sequence[i] < this._sequence[l])
+            ) {
+              this._swap(i, l);
+              this._history.push([...this._sequence]);
+            }
+          }
+        }
+      }
+    }
   }
 
   get positions() {
