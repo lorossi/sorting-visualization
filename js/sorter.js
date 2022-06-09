@@ -6,7 +6,7 @@ const Algorithm = {
   QUICK_SORT: 4,
   COUNTING_SORT: 5,
   HEAP_SORT: 6,
-  BITONIC_SORT: 7,
+  RADIX_SORT: 7,
 };
 
 class Sorter {
@@ -45,8 +45,8 @@ class Sorter {
         this.sort = this._heapSort.bind(this);
         break;
 
-      case Algorithm.BITONIC_SORT:
-        this.sort = this._bitonicSort.bind(this);
+      case Algorithm.RADIX_SORT:
+        this.sort = this._radixSort.bind(this);
         break;
 
       default:
@@ -265,26 +265,30 @@ class Sorter {
     heap_sort(this._sequence, this._num);
   }
 
-  _bitonicSort() {
+  _radixSort() {
+    const count_sort = (arr, exp) => {
+      const n = arr.length;
+      let count = new Array(n).fill(0);
+
+      for (let i = 0; i < n; i++) count[Math.floor((arr[i] / exp) % 10)]++;
+      for (let i = 1; i < 10; i++) count[i] += count[i - 1];
+
+      let output = new Array(n).fill(0);
+
+      for (let i = n - 1; i >= 0; i--) {
+        output[count[Math.floor((arr[i] / exp) % 10)] - 1] = arr[i];
+        count[Math.floor((arr[i] / exp) % 10)]--;
+        this._history.push([...output]);
+      }
+
+      output = [...arr];
+    };
+
     this._sequence = [...this._to_order];
     this._history = [[...this._sequence]];
-
-    for (let k = 2; k <= this._num; k *= 2) {
-      for (let j = Math.floor(k / 2); j > 0; j = Math.floor(j / 2)) {
-        for (let i = 0; i < this._num; i++) {
-          const l = i ^ j;
-          if (l > i) {
-            if (
-              ((i & k) == 0 && this._sequence[i] > this._sequence[l]) ||
-              ((i & k) != 0 && this._sequence[i] < this._sequence[l])
-            ) {
-              this._swap(i, l);
-              this._history.push([...this._sequence]);
-            }
-          }
-        }
-      }
-    }
+    const max = Math.max(...this._sequence);
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10)
+      count_sort(this._sequence, exp);
   }
 
   get positions() {
