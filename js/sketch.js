@@ -2,6 +2,7 @@ class Sketch extends Engine {
   preload() {
     this._num = 100; // number of elements
     this._horizontal_fraction = 0.8; // fraction of the line that stays horizontal
+    this._title_size = 0.1; // fraction of the canvas that is used for the title
   }
 
   setup() {
@@ -29,13 +30,16 @@ class Sketch extends Engine {
     const positions = this._sorter.positions;
 
     // lines scales
+    const dy = this._title_size * this.height;
     const x_scl = this.width / steps;
-    const y_scl = this.height / this._num;
+    const y_scl = (this.height - dy) / this._num;
     const length = x_scl * this._horizontal_fraction;
 
     this.ctx.save();
     this.background("#161616");
-    this.ctx.translate(x_scl / 2, y_scl / 2);
+
+    this.ctx.save();
+    this.ctx.translate(x_scl / 2, dy + y_scl / 2);
 
     this.ctx.lineWidth = 2;
 
@@ -67,6 +71,17 @@ class Sketch extends Engine {
 
     this.ctx.restore();
 
+    // draw the title
+    this.ctx.fillStyle = "#f5f5f5";
+
+    this.ctx.font = `${this._title_size * this.height * 0.7}px RobotoThin`;
+    const dx = this.ctx.measureText(" ").width;
+    this.ctx.textAlign = "left";
+    this.ctx.textBaseline = "middle";
+    this.ctx.fillText(this._sorter.algorithms[a].toLowerCase(), dx, dy / 2);
+
+    this.ctx.restore();
+
     this.noLoop();
   }
 
@@ -95,6 +110,15 @@ class Sketch extends Engine {
         // D, next algorithm
         this._algorithm_index++;
         this.loop();
+        break;
+      case 32:
+        // space
+        const a = this._algorithm_index % this._sorter.algorithms_num;
+        const filename = this._sorter.algorithms[a]
+          .toLowerCase()
+          .replace(" ", "")
+          .replace("-", "");
+        this.saveFrame(filename);
         break;
       default:
         break;
