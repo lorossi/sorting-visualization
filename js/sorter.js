@@ -54,13 +54,21 @@ class Sorter {
         name: "Cocktail Sort",
         method: this._cocktailSort.bind(this),
       },
+      {
+        name: "Odd-Even Sort",
+        method: this._oddEvenSort.bind(this),
+      },
+      {
+        name: "Stooge Sort",
+        method: this._stoogeSort.bind(this),
+      },
     ];
 
     this.setAlgorithm();
   }
 
   setAlgorithm(algorithm = 0) {
-    this.sort = this._algorithms[algorithm].method;
+    this._sortingAlgorithm = this._algorithms[algorithm].method;
   }
 
   generateSequence() {
@@ -87,9 +95,6 @@ class Sorter {
   }
 
   _bubbleSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     let swapped = true;
 
     while (swapped) {
@@ -106,9 +111,6 @@ class Sorter {
   }
 
   _insertionSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     for (let i = 1; i < this._num; i++) {
       let j = i;
 
@@ -121,9 +123,6 @@ class Sorter {
   }
 
   _selectionSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     for (let i = 0; i < this._num - 1; i++) {
       let min = i;
 
@@ -174,8 +173,6 @@ class Sorter {
       }
     };
 
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
     merge_sort(this._sequence, 0, this._num - 1);
   }
 
@@ -213,15 +210,10 @@ class Sorter {
       }
     };
 
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
     quick_sort(this._sequence, 0, this._num - 1);
   }
 
   _countingSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     const max = Math.max(...this._sequence);
     const min = Math.min(...this._sequence);
 
@@ -277,8 +269,6 @@ class Sorter {
       }
     };
 
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
     heap_sort(this._sequence, this._num);
   }
 
@@ -301,17 +291,12 @@ class Sorter {
       output = [...arr];
     };
 
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
     const max = Math.max(...this._sequence);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10)
       count_sort(this._sequence, exp);
   }
 
   _bucketSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     const n = this._num;
     const bucket = new Array(n).fill(0);
 
@@ -327,9 +312,6 @@ class Sorter {
   }
 
   _shellSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     const n = this._num;
     let gap = Math.floor(n / 2);
 
@@ -349,9 +331,6 @@ class Sorter {
   }
 
   _gnomeSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     let i = 1;
     while (i < this._num) {
       if (i == 0) i++;
@@ -365,9 +344,6 @@ class Sorter {
   }
 
   _pancakeSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     const n = this._num;
     for (let curr_size = n; curr_size > 1; curr_size--) {
       const m = this._sequence.indexOf(
@@ -383,9 +359,6 @@ class Sorter {
   }
 
   _cocktailSort() {
-    this._sequence = [...this._to_order];
-    this._history = [[...this._sequence]];
-
     let swapped = true;
     let start = 0;
     let end = this._num - 1;
@@ -413,6 +386,56 @@ class Sorter {
       }
       start++;
     }
+  }
+
+  _oddEvenSort() {
+    let sorted = false;
+
+    while (!sorted) {
+      sorted = true;
+
+      for (let i = 1; i <= this._num - 2; i += 2) {
+        if (this._sequence[i] > this._sequence[i + 1]) {
+          this._swap(i, i + 1);
+          this._history.push([...this._sequence]);
+          sorted = false;
+        }
+      }
+
+      for (let i = 0; i <= this._num - 2; i += 2) {
+        if (this._sequence[i] > this._sequence[i + 1]) {
+          this._swap(i, i + 1);
+          this._history.push([...this._sequence]);
+          sorted = false;
+        }
+      }
+    }
+  }
+
+  _stoogeSort() {
+    const stooge_sort = (arr, l, h) => {
+      if (l >= h) return;
+
+      if (arr[l] > arr[h]) {
+        this._swap(l, h);
+        this._history.push([...this._sequence]);
+      }
+
+      if (h - l + 1 > 2) {
+        const t = Math.floor((h - l + 1) / 3);
+        stooge_sort(arr, l, h - t);
+        stooge_sort(arr, l + t, h);
+        stooge_sort(arr, l, h - t);
+      }
+    };
+
+    stooge_sort(this._sequence, 0, this._sequence.length - 1);
+  }
+
+  sort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+    this._sortingAlgorithm();
   }
 
   get positions() {
