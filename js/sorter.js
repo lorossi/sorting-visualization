@@ -5,6 +5,7 @@ const Algorithm = {
   MERGE_SORT: 3,
   QUICK_SORT: 4,
   COUNTING_SORT: 5,
+  HEAP_SORT: 6,
 };
 
 class Sorter {
@@ -40,6 +41,10 @@ class Sorter {
         this.sort = this._countingSort.bind(this);
         break;
 
+      case Algorithm.HEAP_SORT:
+        this.sort = this._heapSort.bind(this);
+        break;
+
       default:
         this.sort = this._bubbleSort.bind(this);
         break;
@@ -52,8 +57,6 @@ class Sorter {
       .map((_, i) => ({ val: i, order: Math.random() }))
       .sort((a, b) => a.order - b.order)
       .map((a) => a.val);
-
-    this._history = [[...this._sequence]];
   }
 
   _swap(i, j) {
@@ -63,6 +66,8 @@ class Sorter {
   }
 
   _bubbleSort() {
+    this._history = [[...this._sequence]];
+
     let swapped = true;
 
     while (swapped) {
@@ -79,6 +84,8 @@ class Sorter {
   }
 
   _insertionSort() {
+    this._history = [[...this._sequence]];
+
     for (let i = 1; i < this._num; i++) {
       let j = i;
 
@@ -91,6 +98,8 @@ class Sorter {
   }
 
   _selectionSort() {
+    this._history = [[...this._sequence]];
+
     for (let i = 0; i < this._num - 1; i++) {
       let min = i;
 
@@ -141,6 +150,7 @@ class Sorter {
       }
     };
 
+    this._history = [[...this._sequence]];
     merge_sort(this._sequence, 0, this._num - 1);
   }
 
@@ -178,10 +188,13 @@ class Sorter {
       }
     };
 
+    this._history = [[...this._sequence]];
     quick_sort(this._sequence, 0, this._num - 1);
   }
 
   _countingSort() {
+    this._history = [[...this._sequence]];
+
     const max = Math.max(...this._sequence);
     const min = Math.min(...this._sequence);
 
@@ -199,6 +212,47 @@ class Sorter {
         this._history.push([...this._sequence]);
       }
     }
+  }
+
+  _heapSort() {
+    const build_max_heap = (arr, n) => {
+      for (let i = Math.floor(n / 2); i >= 1; i--) {
+        max_heapify(arr, i, n);
+      }
+    };
+
+    const max_heapify = (arr, i, n) => {
+      let largest = i;
+      let l = 2 * i;
+      let r = 2 * i + 1;
+
+      if (l <= n && arr[l] > arr[largest]) {
+        largest = l;
+      }
+
+      if (r <= n && arr[r] > arr[largest]) {
+        largest = r;
+      }
+
+      if (largest !== i) {
+        this._swap(i, largest);
+        max_heapify(arr, largest, n);
+        this._history.push([...arr]);
+      }
+    };
+
+    const heap_sort = (arr, n) => {
+      build_max_heap(arr, n);
+
+      for (let i = n; i >= 2; i--) {
+        this._swap(1, i);
+        max_heapify(arr, 1, i - 1);
+        this._history.push([...arr]);
+      }
+    };
+
+    this._history = [[...this._sequence]];
+    heap_sort(this._sequence, this._num);
   }
 
   get positions() {
