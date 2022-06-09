@@ -7,6 +7,11 @@ const Algorithm = {
   COUNTING_SORT: 5,
   HEAP_SORT: 6,
   RADIX_SORT: 7,
+  BUCKET_SORT: 8,
+  SHELL_SORT: 9,
+  GNOME_SORT: 10,
+  PANCAKE_SORT: 11,
+  COCKTAIL_SORT: 12,
 };
 
 class Sorter {
@@ -49,6 +54,26 @@ class Sorter {
         this.sort = this._radixSort.bind(this);
         break;
 
+      case Algorithm.BUCKET_SORT:
+        this.sort = this._bucketSort.bind(this);
+        break;
+
+      case Algorithm.SHELL_SORT:
+        this.sort = this._shellSort.bind(this);
+        break;
+
+      case Algorithm.GNOME_SORT:
+        this.sort = this._gnomeSort.bind(this);
+        break;
+
+      case Algorithm.PANCAKE_SORT:
+        this.sort = this._pancakeSort.bind(this);
+        break;
+
+      case Algorithm.COCKTAIL_SORT:
+        this.sort = this._cocktailSort.bind(this);
+        break;
+
       default:
         this.sort = this._bubbleSort.bind(this);
         break;
@@ -67,6 +92,15 @@ class Sorter {
     const temp = this._sequence[i];
     this._sequence[i] = this._sequence[j];
     this._sequence[j] = temp;
+  }
+
+  _flip(i) {
+    let start = 0;
+    while (start < i) {
+      this._swap(i, start);
+      start++;
+      i--;
+    }
   }
 
   _bubbleSort() {
@@ -289,6 +323,113 @@ class Sorter {
     const max = Math.max(...this._sequence);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10)
       count_sort(this._sequence, exp);
+  }
+
+  _bucketSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    const n = this._num;
+    const bucket = new Array(n).fill(0);
+
+    for (let i = 0; i < n; i++) bucket[this._sequence[i]]++;
+
+    let k = 0;
+    for (let i = 0; i < n; i++) {
+      while (bucket[i]-- > 0) {
+        this._sequence[k++] = i;
+        this._history.push([...this._sequence]);
+      }
+    }
+  }
+
+  _shellSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    const n = this._num;
+    let gap = Math.floor(n / 2);
+
+    while (gap > 0) {
+      for (let i = gap; i < n; i++) {
+        for (
+          let j = i;
+          j >= gap && this._sequence[j] < this._sequence[j - gap];
+          j -= gap
+        ) {
+          this._swap(j, j - gap);
+          this._history.push([...this._sequence]);
+        }
+      }
+      gap = Math.floor(gap / 2);
+    }
+  }
+
+  _gnomeSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    let i = 1;
+    while (i < this._num) {
+      if (i == 0) i++;
+      if (this._sequence[i] >= this._sequence[i - 1]) i++;
+      else {
+        this._swap(i, i - 1);
+        this._history.push([...this._sequence]);
+        i--;
+      }
+    }
+  }
+
+  _pancakeSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    const n = this._num;
+    for (let curr_size = n; curr_size > 1; curr_size--) {
+      const m = this._sequence.indexOf(
+        Math.max(...this._sequence.slice(0, curr_size))
+      );
+
+      if (m != curr_size - 1) {
+        this._flip(m);
+        this._flip(curr_size - 1);
+        this._history.push([...this._sequence]);
+      }
+    }
+  }
+
+  _cocktailSort() {
+    this._sequence = [...this._to_order];
+    this._history = [[...this._sequence]];
+
+    let swapped = true;
+    let start = 0;
+    let end = this._num - 1;
+
+    while (swapped) {
+      swapped = false;
+      for (let i = start; i < end; i++) {
+        if (this._sequence[i] > this._sequence[i + 1]) {
+          this._swap(i, i + 1);
+          this._history.push([...this._sequence]);
+          swapped = true;
+        }
+      }
+      end--;
+
+      if (!swapped) break;
+
+      swapped = false;
+      for (let i = end - 1; i >= start; i--) {
+        if (this._sequence[i] > this._sequence[i + 1]) {
+          this._swap(i, i + 1);
+          this._history.push([...this._sequence]);
+          swapped = true;
+        }
+      }
+      start++;
+    }
   }
 
   get positions() {
