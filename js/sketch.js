@@ -6,15 +6,15 @@ class Sketch extends Engine {
 
   setup() {
     this._sorter = new Sorter(this._num);
+    this._palette = new Palette(this._num);
   }
 
   draw() {
     const a = this.frameCount % Object.keys(Algorithm).length;
     console.log(Object.keys(Algorithm)[a]);
 
-    this._sorter.setAlgorithm(a);
-
     this._sorter.generateSequence();
+    this._sorter.setAlgorithm(a);
     this._sorter.sort();
 
     const steps = this._sorter.steps;
@@ -25,16 +25,15 @@ class Sketch extends Engine {
     const length = x_scl * this._horizontal_fraction;
 
     this.ctx.save();
-    this.background("#000000");
+    this.background("#161616");
     this.ctx.translate(x_scl / 2, y_scl / 2);
 
     this.ctx.lineWidth = 2;
 
     for (let i = 0; i < this._num; i++) {
       let started = false;
-      const hue = Math.floor((i / (this._num + 1)) * 360);
-
-      this.ctx.strokeStyle = `hsla(${hue}, 100%, 50%, 1)`;
+      this.ctx.strokeStyle = this._palette.getColour(i).rgb;
+      this.ctx.lineWidth = 3;
       this.ctx.beginPath();
 
       for (let p = 0; p < steps; p++) {
