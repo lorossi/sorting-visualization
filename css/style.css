@@ -3,6 +3,11 @@
   src: url(fonts/Roboto-Light.ttf);
 }
 
+@font-face {
+  font-family: RobotoThin;
+  src: url(fonts/Roboto-Thin.ttf);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -35,8 +40,8 @@ a:active {
 }
 
 #sketch {
-  height: 95vh;
-  width: 95vh;
+  height: 90vh;
+  width: 90vh;
   aspect-ratio: 1;
 
   touch-action: none;
