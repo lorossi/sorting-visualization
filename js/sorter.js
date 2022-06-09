@@ -255,6 +255,7 @@ class Sorter {
 
       if (largest !== i) {
         this._swap(arr, i, largest);
+        this._history.push([...arr]);
         max_heapify(arr, largest, n);
       }
     };
