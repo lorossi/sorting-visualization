@@ -273,27 +273,31 @@ class Sorter {
   }
 
   _radixSort() {
-    const count_sort = (arr, exp) => {
-      let count = new Array(arr.length).fill(0);
+    const counting_sort = (arr, size, place) => {
+      let max = Math.max(...arr);
+      let output = Array(size + 1).fill(0);
+      let freq = Array(max + 1).fill(0);
 
-      for (let i = 0; i < arr.length; i++)
-        count[Math.floor((arr[i] / exp) % 10)]++;
-      for (let i = 1; i < 10; i++) count[i] += count[i - 1];
-
-      let output = new Array(arr.length).fill(0);
-
-      for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[Math.floor((arr[i] / exp) % 10)] - 1] = arr[i];
-        count[Math.floor((arr[i] / exp) % 10)]--;
-        this._history.push([...output]);
+      for (let i = 0; i < size; i++) {
+        const digit = Math.floor(arr[i] / place) % 10;
+        freq[digit]++;
       }
 
-      output = [...arr];
+      for (let i = 1; i < max + 1; i++) freq[i] += freq[i - 1];
+
+      for (let i = size - 1; i >= 0; i--) {
+        const digit = Math.floor(arr[i] / place) % 10;
+        output[freq[digit] - 1] = arr[i];
+        this._history.push([...output]);
+        freq[digit]--;
+      }
+
+      for (let i = 0; i < size; i++) arr[i] = output[i];
     };
 
     const max = Math.max(...this._sequence);
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10)
-      count_sort(this._sequence, exp);
+    for (let i = 1; Math.floor(max / i) > 0; i *= 10)
+      counting_sort(this._sequence, this._num, i);
   }
 
   _bucketSort() {
