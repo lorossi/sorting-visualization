@@ -7,13 +7,15 @@ class Sketch extends Engine {
   setup() {
     this._sorter = new Sorter(this._num);
     this._palette = new Palette(this._num);
+    this._sorter.generateSequence();
+
+    this._algorithm_index = 0;
   }
 
   draw() {
-    const a = this.frameCount % Object.keys(Algorithm).length;
+    const a = this._algorithm_index % Object.keys(Algorithm).length;
     console.log(Object.keys(Algorithm)[a]);
 
-    this._sorter.generateSequence();
     this._sorter.setAlgorithm(a);
     this._sorter.sort();
 
@@ -61,6 +63,33 @@ class Sketch extends Engine {
   }
 
   click() {
+    this._algorithm_index++;
     this.loop();
+  }
+
+  keyPress(key, code) {
+    console.log(code);
+
+    switch (code) {
+      case 13:
+        // enter
+        this._sorter.generateSequence();
+        this.loop();
+        break;
+      case 97:
+        // A
+        this._algorithm_index--;
+        if (this._algorithm_index < 0)
+          this._algorithm_index += Object.keys(Algorithm).length;
+        this.loop();
+        break;
+      case 100:
+        // D
+        this._algorithm_index++;
+        this.loop();
+        break;
+      default:
+        break;
+    }
   }
 }
