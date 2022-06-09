@@ -63,7 +63,18 @@ a:active {
   padding-right: 2vw;
 }
 
-@media only screen and (max-width: 600px) {
+.instructions {
+  user-select: none;
+  color: var(--text-color);
+}
+
+.hide {
+  opacity: 0;
+  transition: opacity 2000ms;
+  transition-timing-function: ease-out;
+}
+
+@media only screen and (max-width: 900px) {
   #sketch {
     height: 95vw;
     width: 95vw;
@@ -71,5 +82,9 @@ a:active {
 
   .footer {
     justify-content: space-around;
+  }
+
+  .footer * {
+    text-align: center;
   }
 }

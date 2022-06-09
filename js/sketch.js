@@ -3,6 +3,7 @@ class Sketch extends Engine {
     this._num = 100; // number of elements
     this._horizontal_fraction = 0.8; // fraction of the line that stays horizontal
     this._title_size = 0.1; // fraction of the canvas that is used for the title
+    this._instructions = document.querySelector(".instructions"); // hide instructions after the first click
   }
 
   setup() {
@@ -36,7 +37,7 @@ class Sketch extends Engine {
     const length = x_scl * this._horizontal_fraction;
 
     this.ctx.save();
-    this.ctx.filter = "sepia(0.25);contrast(200%);";
+    this.ctx.filter = "sepia(0.25);contrast(2);";
     this.background("#161616");
 
     this.ctx.save();
@@ -87,6 +88,7 @@ class Sketch extends Engine {
   }
 
   click() {
+    this._instructions.classList.add("hide");
     this._algorithm_index++;
     this.loop();
   }
