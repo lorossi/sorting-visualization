@@ -1,83 +1,66 @@
-const Algorithm = {
-  BUBBLE_SORT: 0,
-  INSERTION_SORT: 1,
-  SELECTION_SORT: 2,
-  MERGE_SORT: 3,
-  QUICK_SORT: 4,
-  COUNTING_SORT: 5,
-  HEAP_SORT: 6,
-  RADIX_SORT: 7,
-  BUCKET_SORT: 8,
-  SHELL_SORT: 9,
-  GNOME_SORT: 10,
-  PANCAKE_SORT: 11,
-  COCKTAIL_SORT: 12,
-};
-
 class Sorter {
   constructor(num) {
     this._num = num;
+    this._algorithms = [
+      {
+        name: "Bubble Sort",
+        method: this._bubbleSort.bind(this),
+      },
+      {
+        name: "Insertion Sort",
+        method: this._insertionSort.bind(this),
+      },
+      {
+        name: "Selection Sort",
+        method: this._selectionSort.bind(this),
+      },
+      {
+        name: "Merge Sort",
+        method: this._mergeSort.bind(this),
+      },
+      {
+        name: "Quick Sort",
+        method: this._quickSort.bind(this),
+      },
+      {
+        name: "Counting Sort",
+        method: this._countingSort.bind(this),
+      },
+      {
+        name: "Heap Sort",
+        method: this._heapSort.bind(this),
+      },
+      {
+        name: "Radix Sort",
+        method: this._radixSort.bind(this),
+      },
+      {
+        name: "Bucket Sort",
+        method: this._bucketSort.bind(this),
+      },
+      {
+        name: "Shell Sort",
+        method: this._shellSort.bind(this),
+      },
+      {
+        name: "Gnome Sort",
+        method: this._gnomeSort.bind(this),
+      },
+      {
+        name: "Pancake Sort",
+        method: this._pancakeSort.bind(this),
+      },
+      {
+        name: "Cocktail Sort",
+        method: this._cocktailSort.bind(this),
+      },
+    ];
+
     this.setAlgorithm();
   }
 
-  setAlgorithm(algorithm) {
-    switch (algorithm) {
-      case Algorithm.BUBBLE_SORT:
-        this.sort = this._bubbleSort.bind(this);
-        break;
-
-      case Algorithm.INSERTION_SORT:
-        this.sort = this._insertionSort.bind(this);
-        break;
-
-      case Algorithm.SELECTION_SORT:
-        this.sort = this._selectionSort.bind(this);
-        break;
-
-      case Algorithm.MERGE_SORT:
-        this.sort = this._mergeSort.bind(this);
-        break;
-
-      case Algorithm.QUICK_SORT:
-        this.sort = this._quickSort.bind(this);
-        break;
-
-      case Algorithm.COUNTING_SORT:
-        this.sort = this._countingSort.bind(this);
-        break;
-
-      case Algorithm.HEAP_SORT:
-        this.sort = this._heapSort.bind(this);
-        break;
-
-      case Algorithm.RADIX_SORT:
-        this.sort = this._radixSort.bind(this);
-        break;
-
-      case Algorithm.BUCKET_SORT:
-        this.sort = this._bucketSort.bind(this);
-        break;
-
-      case Algorithm.SHELL_SORT:
-        this.sort = this._shellSort.bind(this);
-        break;
-
-      case Algorithm.GNOME_SORT:
-        this.sort = this._gnomeSort.bind(this);
-        break;
-
-      case Algorithm.PANCAKE_SORT:
-        this.sort = this._pancakeSort.bind(this);
-        break;
-
-      case Algorithm.COCKTAIL_SORT:
-        this.sort = this._cocktailSort.bind(this);
-        break;
-
-      default:
-        this.sort = this._bubbleSort.bind(this);
-        break;
-    }
+  setAlgorithm(algorithm = 0) {
+    this.sort = this._algorithms[algorithm].method;
   }
 
   generateSequence() {
@@ -454,5 +437,13 @@ class Sorter {
 
   get steps() {
     return this._history.length;
+  }
+
+  get algorithms() {
+    return this._algorithms.map((a) => a.name);
+  }
+
+  get algorithms_num() {
+    return this._algorithms.length;
   }
 }

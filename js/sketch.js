@@ -13,8 +13,8 @@ class Sketch extends Engine {
   }
 
   draw() {
-    const a = this._algorithm_index % Object.keys(Algorithm).length;
-    console.log(Object.keys(Algorithm)[a]);
+    const a = this._algorithm_index % this._sorter.algorithms_num;
+    console.log(this._sorter.algorithms[a]);
 
     this._sorter.setAlgorithm(a);
     this._sorter.sort();
@@ -67,7 +67,7 @@ class Sketch extends Engine {
     this.loop();
   }
 
-  keyPress(key, code) {
+  keyPress(_, code) {
     console.log(code);
 
     switch (code) {
@@ -80,7 +80,7 @@ class Sketch extends Engine {
         // A
         this._algorithm_index--;
         if (this._algorithm_index < 0)
-          this._algorithm_index += Object.keys(Algorithm).length;
+          this._algorithm_index += this._sorter.algorithms_num;
         this.loop();
         break;
       case 100:
