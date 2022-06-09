@@ -36,6 +36,7 @@ class Sketch extends Engine {
     const length = x_scl * this._horizontal_fraction;
 
     this.ctx.save();
+    this.ctx.filter = "sepia(0.25);contrast(200%);";
     this.background("#161616");
 
     this.ctx.save();
