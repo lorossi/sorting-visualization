@@ -1,12 +1,17 @@
 const Algorithm = {
   BUBBLE_SORT: 0,
   INSERTION_SORT: 1,
-  MERGE_SORT: 2,
+  SELECTION_SORT: 2,
+  MERGE_SORT: 3,
+  QUICK_SORT: 4,
+  COUNTING_SORT: 5,
 };
 
 class Sorter {
   constructor(num) {
     this._num = num;
+
+    this.setAlgorithm();
   }
 
   setAlgorithm(algorithm) {
@@ -19,8 +24,20 @@ class Sorter {
         this.sort = this._insertionSort.bind(this);
         break;
 
+      case Algorithm.SELECTION_SORT:
+        this.sort = this._selectionSort.bind(this);
+        break;
+
       case Algorithm.MERGE_SORT:
         this.sort = this._mergeSort.bind(this);
+        break;
+
+      case Algorithm.QUICK_SORT:
+        this.sort = this._quickSort.bind(this);
+        break;
+
+      case Algorithm.COUNTING_SORT:
+        this.sort = this._countingSort.bind(this);
         break;
 
       default:
@@ -37,6 +54,12 @@ class Sorter {
       .map((a) => a.val);
 
     this._history = [[...this._sequence]];
+  }
+
+  _swap(i, j) {
+    const temp = this._sequence[i];
+    this._sequence[i] = this._sequence[j];
+    this._sequence[j] = temp;
   }
 
   _bubbleSort() {
@@ -67,14 +90,115 @@ class Sorter {
     }
   }
 
-  _mergeSort() {
-    throw new Error("Not implemented");
+  _selectionSort() {
+    for (let i = 0; i < this._num - 1; i++) {
+      let min = i;
+
+      for (let j = i + 1; j < this._num; j++) {
+        if (this._sequence[j] < this._sequence[min]) {
+          min = j;
+        }
+      }
+
+      if (min !== i) {
+        this._swap(i, min);
+        this._history.push([...this._sequence]);
+      }
+    }
   }
 
-  _swap(i, j) {
-    const temp = this._sequence[i];
-    this._sequence[i] = this._sequence[j];
-    this._sequence[j] = temp;
+  _mergeSort() {
+    const merge = (arr, left, mid, right) => {
+      const temp = [];
+      let i = left;
+      let j = mid + 1;
+
+      for (let k = left; k <= right; k++) {
+        if (i > mid) {
+          temp[k] = arr[j++];
+        } else if (j > right) {
+          temp[k] = arr[i++];
+        } else if (arr[i] < arr[j]) {
+          temp[k] = arr[i++];
+        } else {
+          temp[k] = arr[j++];
+        }
+      }
+
+      for (let k = left; k <= right; k++) {
+        arr[k] = temp[k];
+      }
+
+      this._history.push([...arr]);
+    };
+
+    const merge_sort = (arr, left, right) => {
+      if (left < right) {
+        const mid = Math.floor((left + right) / 2);
+        merge_sort(arr, left, mid);
+        merge_sort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+      }
+    };
+
+    merge_sort(this._sequence, 0, this._num - 1);
+  }
+
+  _quickSort() {
+    const partition = (arr, left, right, pivot) => {
+      let i = left;
+      let j = right;
+
+      while (i <= j) {
+        while (arr[i] < pivot) {
+          i++;
+        }
+
+        while (arr[j] > pivot) {
+          j--;
+        }
+
+        if (i <= j) {
+          this._swap(i, j);
+          this._history.push([...arr]);
+          i++;
+          j--;
+        }
+      }
+
+      return i;
+    };
+
+    const quick_sort = (arr, left, right) => {
+      if (left < right) {
+        const pivot = arr[Math.floor((left + right) / 2)];
+        const index = partition(arr, left, right, pivot);
+        quick_sort(arr, left, index - 1);
+        quick_sort(arr, index, right);
+      }
+    };
+
+    quick_sort(this._sequence, 0, this._num - 1);
+  }
+
+  _countingSort() {
+    const max = Math.max(...this._sequence);
+    const min = Math.min(...this._sequence);
+
+    let c = Array(max - min + 1).fill(0);
+
+    for (let i = 0; i < this._num; i++) {
+      c[this._sequence[i] - min]++;
+    }
+
+    let k = 0;
+    for (let i = min; i <= max; i++) {
+      while (c[i - min] > 0) {
+        this._sequence[k++] = i;
+        c[i - min]--;
+        this._history.push([...this._sequence]);
+      }
+    }
   }
 
   get positions() {

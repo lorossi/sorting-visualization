@@ -9,7 +9,11 @@ class Sketch extends Engine {
   }
 
   draw() {
-    this._sorter.setAlgorithm(Algorithm.INSERTION_SORT);
+    const a = this.frameCount % Object.keys(Algorithm).length;
+    console.log(Object.keys(Algorithm)[a]);
+
+    this._sorter.setAlgorithm(a);
+
     this._sorter.generateSequence();
     this._sorter.sort();
 
