@@ -216,7 +216,7 @@ class Sorter {
 
   _heapSort() {
     const build_max_heap = (arr, n) => {
-      for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      for (let i = n / 2 - 1; i >= 0; i--) {
         max_heapify(arr, i, n);
       }
     };
@@ -226,28 +226,27 @@ class Sorter {
       let l = 2 * i;
       let r = 2 * i + 1;
 
-      if (l <= n && arr[l] > arr[largest]) {
+      if (l < n && arr[l] > arr[largest]) {
         largest = l;
       }
 
-      if (r <= n && arr[r] > arr[largest]) {
+      if (r < n && arr[r] > arr[largest]) {
         largest = r;
       }
 
       if (largest !== i) {
         this._swap(i, largest);
         max_heapify(arr, largest, n);
-        this._history.push([...arr]);
       }
     };
 
     const heap_sort = (arr, n) => {
       build_max_heap(arr, n);
 
-      for (let i = n - 1; i > 2; i--) {
+      for (let i = n - 1; i > 0; i--) {
         this._swap(0, i);
-        max_heapify(arr, 0, i);
         this._history.push([...arr]);
+        max_heapify(arr, 0, i);
       }
     };
 
