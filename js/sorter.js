@@ -79,16 +79,16 @@ class Sorter {
       .map((a) => a.val);
   }
 
-  _swap(i, j) {
-    const temp = this._sequence[i];
-    this._sequence[i] = this._sequence[j];
-    this._sequence[j] = temp;
+  _swap(arr, i, j) {
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
   }
 
-  _flip(i) {
+  _flip(arr, i) {
     let start = 0;
     while (start < i) {
-      this._swap(i, start);
+      this._swap(arr, i, start);
       start++;
       i--;
     }
@@ -102,7 +102,7 @@ class Sorter {
 
       for (let i = 0; i < this._num - 1; i++) {
         if (this._sequence[i] > this._sequence[i + 1]) {
-          this._swap(i, i + 1);
+          this._swap(this._sequence, i, i + 1);
           this._history.push([...this._sequence]);
           swapped = true;
         }
@@ -115,7 +115,7 @@ class Sorter {
       let j = i;
 
       while (j > 0 && this._sequence[j - 1] > this._sequence[j]) {
-        this._swap(j - 1, j);
+        this._swap(this._sequence, j - 1, j);
         this._history.push([...this._sequence]);
         j--;
       }
@@ -133,7 +133,7 @@ class Sorter {
       }
 
       if (min !== i) {
-        this._swap(i, min);
+        this._swap(this._sequence, i, min);
         this._history.push([...this._sequence]);
       }
     }
@@ -191,7 +191,7 @@ class Sorter {
         }
 
         if (i <= j) {
-          this._swap(i, j);
+          this._swap(arr, i, j);
           this._history.push([...arr]);
           i++;
           j--;
@@ -254,7 +254,7 @@ class Sorter {
       }
 
       if (largest !== i) {
-        this._swap(i, largest);
+        this._swap(arr, i, largest);
         max_heapify(arr, largest, n);
       }
     };
@@ -263,7 +263,7 @@ class Sorter {
       build_max_heap(arr, n);
 
       for (let i = n - 1; i > 0; i--) {
-        this._swap(0, i);
+        this._swap(arr, 0, i);
         this._history.push([...arr]);
         max_heapify(arr, 0, i);
       }
@@ -274,15 +274,15 @@ class Sorter {
 
   _radixSort() {
     const count_sort = (arr, exp) => {
-      const n = arr.length;
-      let count = new Array(n).fill(0);
+      let count = new Array(arr.length).fill(0);
 
-      for (let i = 0; i < n; i++) count[Math.floor((arr[i] / exp) % 10)]++;
+      for (let i = 0; i < arr.length; i++)
+        count[Math.floor((arr[i] / exp) % 10)]++;
       for (let i = 1; i < 10; i++) count[i] += count[i - 1];
 
-      let output = new Array(n).fill(0);
+      let output = new Array(arr.length).fill(0);
 
-      for (let i = n - 1; i >= 0; i--) {
+      for (let i = arr.length - 1; i >= 0; i--) {
         output[count[Math.floor((arr[i] / exp) % 10)] - 1] = arr[i];
         count[Math.floor((arr[i] / exp) % 10)]--;
         this._history.push([...output]);
@@ -297,13 +297,12 @@ class Sorter {
   }
 
   _bucketSort() {
-    const n = this._num;
-    const bucket = new Array(n).fill(0);
+    const bucket = new Array(this._num).fill(0);
 
-    for (let i = 0; i < n; i++) bucket[this._sequence[i]]++;
+    for (let i = 0; i < this._num; i++) bucket[this._sequence[i]]++;
 
     let k = 0;
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < this._num; i++) {
       while (bucket[i]-- > 0) {
         this._sequence[k++] = i;
         this._history.push([...this._sequence]);
@@ -312,17 +311,16 @@ class Sorter {
   }
 
   _shellSort() {
-    const n = this._num;
-    let gap = Math.floor(n / 2);
+    let gap = Math.floor(this._num / 2);
 
     while (gap > 0) {
-      for (let i = gap; i < n; i++) {
+      for (let i = gap; i < this._num; i++) {
         for (
           let j = i;
           j >= gap && this._sequence[j] < this._sequence[j - gap];
           j -= gap
         ) {
-          this._swap(j, j - gap);
+          this._swap(this._sequence, j, j - gap);
           this._history.push([...this._sequence]);
         }
       }
@@ -336,7 +334,7 @@ class Sorter {
       if (i == 0) i++;
       if (this._sequence[i] >= this._sequence[i - 1]) i++;
       else {
-        this._swap(i, i - 1);
+        this._swap(this._sequence, i, i - 1);
         this._history.push([...this._sequence]);
         i--;
       }
@@ -344,15 +342,14 @@ class Sorter {
   }
 
   _pancakeSort() {
-    const n = this._num;
-    for (let curr_size = n; curr_size > 1; curr_size--) {
+    for (let curr_size = this._num; curr_size > 1; curr_size--) {
       const m = this._sequence.indexOf(
         Math.max(...this._sequence.slice(0, curr_size))
       );
 
       if (m != curr_size - 1) {
-        this._flip(m);
-        this._flip(curr_size - 1);
+        this._flip(this._sequence, m);
+        this._flip(this._sequence, curr_size - 1);
         this._history.push([...this._sequence]);
       }
     }
@@ -367,7 +364,7 @@ class Sorter {
       swapped = false;
       for (let i = start; i < end; i++) {
         if (this._sequence[i] > this._sequence[i + 1]) {
-          this._swap(i, i + 1);
+          this._swap(this._sequence, i, i + 1);
           this._history.push([...this._sequence]);
           swapped = true;
         }
@@ -379,7 +376,7 @@ class Sorter {
       swapped = false;
       for (let i = end - 1; i >= start; i--) {
         if (this._sequence[i] > this._sequence[i + 1]) {
-          this._swap(i, i + 1);
+          this._swap(this._sequence, i, i + 1);
           this._history.push([...this._sequence]);
           swapped = true;
         }
@@ -396,7 +393,7 @@ class Sorter {
 
       for (let i = 1; i <= this._num - 2; i += 2) {
         if (this._sequence[i] > this._sequence[i + 1]) {
-          this._swap(i, i + 1);
+          this._swap(this._sequence, i, i + 1);
           this._history.push([...this._sequence]);
           sorted = false;
         }
@@ -404,7 +401,7 @@ class Sorter {
 
       for (let i = 0; i <= this._num - 2; i += 2) {
         if (this._sequence[i] > this._sequence[i + 1]) {
-          this._swap(i, i + 1);
+          this._swap(this._sequence, i, i + 1);
           this._history.push([...this._sequence]);
           sorted = false;
         }
@@ -417,7 +414,7 @@ class Sorter {
       if (l >= h) return;
 
       if (arr[l] > arr[h]) {
-        this._swap(l, h);
+        this._swap(arr, l, h);
         this._history.push([...this._sequence]);
       }
 
