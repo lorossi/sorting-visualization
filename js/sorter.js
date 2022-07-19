@@ -62,6 +62,10 @@ class Sorter {
         name: "Stooge Sort",
         method: this._stoogeSort.bind(this),
       },
+      {
+        name: "Comb Sort",
+        method: this._combSort.bind(this),
+      },
     ];
 
     this.setAlgorithm();
@@ -432,6 +436,28 @@ class Sorter {
     };
 
     stooge_sort(this._sequence, 0, this._sequence.length - 1);
+  }
+
+  _combSort() {
+    const comb_sort = (arr, size) => {
+      let gap = size;
+      let swapped = true;
+
+      while (gap > 1 || swapped) {
+        if (gap > 1) gap = Math.floor(gap / 1.3);
+
+        swapped = false;
+        for (let i = 0; i + gap < size; i++) {
+          if (arr[i] > arr[i + gap]) {
+            this._swap(arr, i, i + gap);
+            this._history.push([...this._sequence]);
+            swapped = true;
+          }
+        }
+      }
+    };
+
+    comb_sort(this._sequence, this._num);
   }
 
   sort() {
