@@ -8,8 +8,8 @@ At the end the position of each element is tracked along consecutive steps of th
 The colour of each line is determined according to the value of the element, in a 5 colours palette that has been smoothed out.
 By following a single line, you can see how the item moved in the array during the sorting process: some algorithms focus on single elements, while others look like they move items in groups.
 
-Then I kinda lost myself and implemented many other sorting algorithms, including some that do not make sense at all *(for example, Gnome Sort)*.
-Also, I have an exam coming up in two days and I am hitting that level of anxiety where I start procrastinating because I ran out of material to study.
+Then I kinda lost myself and implemented many other sorting algorithms, including some that do not make sense at all *(for example, Gnome Sort)*;
+I also have an exam coming up in two days and I am hitting that level of anxiety where I start procrastinating because I ran out of material to study.
 
 Enjoy these images, featuring the sorting algorithms I have implemented.
 The data ordered by each algorithm is the same in every picture.
@@ -17,7 +17,7 @@ The data ordered by each algorithm is the same in every picture.
 I think it's pretty cool to see how each algorithm performs, and how each element is ordered.
 Even from these simple images you can pretty much understand how these algorithms work and how fast they are.
 
-You can also try the visualization [here](TODO) or you can look at other things I have made on my [Instagram profile](https://instagram.com/lorossi).
+You can also try the visualization [here](https://lorenzoros.si/sorting-visualization) or you can look at other things I have made on my [Instagram profile](https://instagram.com/lorossi).
 
 ## Output
 

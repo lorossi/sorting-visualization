@@ -21,7 +21,6 @@ class Sketch extends Engine {
   draw() {
     // pick and algorithm
     const a = this._algorithm_index % this._sorter.algorithms_num;
-    console.log(this._sorter.algorithms[a]);
     // sort the sequence in the sorter
     this._sorter.setAlgorithm(a);
     this._sorter.sort();
@@ -94,8 +93,6 @@ class Sketch extends Engine {
   }
 
   keyPress(_, code) {
-    console.log(code);
-
     switch (code) {
       case 13:
         // enter
